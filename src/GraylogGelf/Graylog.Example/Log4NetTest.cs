@@ -13,6 +13,9 @@ namespace Graylog.Example
     {
         private static readonly ILog Log = LogManager.GetLogger("Log4NetTest");
 
+        /// <summary>
+        /// dddd
+        /// </summary>
         public static void Mains()
         {
             ConfigureLogging();
