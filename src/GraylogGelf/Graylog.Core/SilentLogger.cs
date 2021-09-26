@@ -13,9 +13,11 @@ namespace Graylog.Core
     {
         public void Error(string message, Exception exception)
         {
+            LogUtils.AddLog(message + "  ex:" + exception.Message);
         }
         public void Debug(string message)
         {
+            LogUtils.AddLog(message);
         }
     }
 

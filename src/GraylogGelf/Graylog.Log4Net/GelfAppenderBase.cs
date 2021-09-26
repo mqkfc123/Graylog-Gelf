@@ -38,7 +38,7 @@ namespace Graylog.Log4Net
             HostName = Environment.MachineName;
             UseRetry = true;
             RetryCount = 5;
-            RetryDelay = TimeSpan.FromMilliseconds(50);
+            RetryDelay = TimeSpan.FromMilliseconds(5000);
             IncludeStackTrace = true;
         }
 
@@ -105,7 +105,6 @@ namespace Graylog.Log4Net
                         messageBuilder.SetAdditionalField(propertyKey, properties[propertyKey]?.ToString());
                     }
                 }
-
                 transport.Send(messageBuilder.ToMessage());
             }
             catch (Exception exception)

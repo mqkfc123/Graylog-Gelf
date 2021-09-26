@@ -2,21 +2,19 @@
 using Graylog.Core.Encoders;
 using Graylog.Core.Transports;
 using Graylog.Core.Transports.Udp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace Graylog.Log4Net
 {
     public sealed class GelfUdpAppender : GelfAppenderBase
     {
+
         public GelfUdpAppender()
         {
             RemoteAddress = IPAddress.Loopback.ToString();
             RemotePort = 12201;
             MessageSize = 8096;
+
         }
 
         public int MessageSize { get; set; }

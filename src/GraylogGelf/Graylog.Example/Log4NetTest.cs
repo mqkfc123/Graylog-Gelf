@@ -21,14 +21,14 @@ namespace Graylog.Example
             ConfigureLogging();
             while (true)
             {
-                Log.Info("I'm alive");
+                Log.Info("I'm alive a");
                 try
                 {
                     ThrowException();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Descriptive message example", ex);
+                    //Log.Error("Descriptive message example", ex);
                 }
                 Thread.Sleep(TimeSpan.FromSeconds(0.5));
             }
