@@ -14,17 +14,14 @@ namespace Graylog.Example
         private static readonly ILog Log = LogManager.GetLogger("Log4NetTest");
 
         /// <summary>
-        /// dddd 20
+        /// net2.0
         /// </summary>
-        public static void Mains()
+        public static void Main()
         {
             ConfigureLogging();
-            var cancelationTokenSource = new CancellationTokenSource();
-            Console.CancelKeyPress += (sender, eventArgs) => cancelationTokenSource.Cancel();
-            while (!cancelationTokenSource.IsCancellationRequested)
+            while (true)
             {
                 Log.Info("I'm alive");
-
                 try
                 {
                     ThrowException();
@@ -33,8 +30,6 @@ namespace Graylog.Example
                 {
                     Log.Error("Descriptive message example", ex);
                 }
-
-
                 Thread.Sleep(TimeSpan.FromSeconds(0.5));
             }
         }
@@ -46,7 +41,6 @@ namespace Graylog.Example
                 throw new Exception();
             XmlConfigurator.Configure(fileInfo);
         }
-
 
         private static void ThrowException()
         {

@@ -11,7 +11,7 @@ namespace Graylog.Example
     {
         private static readonly Logger Log = LogManager.GetLogger("NLogTest");
 
-        public static void Main()
+        public static void Mains()
         {
             var cancelationTokenSource = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, eventArgs) => cancelationTokenSource.Cancel();

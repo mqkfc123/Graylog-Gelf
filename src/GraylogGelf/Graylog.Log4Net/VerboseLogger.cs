@@ -8,12 +8,12 @@ namespace Graylog.Log4Net
     {
         public void Error(string message, Exception exception)
         {
-            LogLog.Error(typeof(VerboseLogger), message, exception);
+            LogLog.Error(message, exception);
         }
 
         public void Debug(string message)
         {
-            LogLog.Debug(typeof(VerboseLogger), message);
+            LogLog.Debug(message);
         }
     }
 }

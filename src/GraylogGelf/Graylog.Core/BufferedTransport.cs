@@ -1,6 +1,6 @@
 ﻿using Graylog.Core.Transports;
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Graylog.Core
@@ -8,23 +8,26 @@ namespace Graylog.Core
 
     public sealed class BufferedTransport : ITransport
     {
-        private readonly BlockingCollection<GelfMessage> buffer = new BlockingCollection<GelfMessage>();
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly Queue<GelfMessage> buffer = new Queue<GelfMessage>();
         private readonly ManualResetEvent stopEvent = new ManualResetEvent(false);
 
         public BufferedTransport(IGraylogGelfLogger logger, ITransport transport)
         {
             new Thread(() =>
             {
-                var cancellationToken = cancellationTokenSource.Token;
                 try
                 {
-                    GelfMessage mesage;
-                    while (buffer.TryTake(out mesage, -1, cancellationToken))
+                    while (true)
                     {
                         try
                         {
-                            transport.Send(mesage);
+                            if (buffer.Count <= 0)
+                                continue;
+
+                            GelfMessage message = buffer.Dequeue();
+
+                            transport.Send(message);
+                            Thread.Sleep(100);
                         }
                         catch (Exception exception)
                         {
@@ -34,36 +37,38 @@ namespace Graylog.Core
                 }
                 catch
                 {
-                    GelfMessage message;
-                    while (buffer.TryTake(out message))
+                    while (true)
                     {
                         try
                         {
+                            if (buffer.Count <= 0)
+                                continue;
+
+                            GelfMessage message = buffer.Dequeue();
                             transport.Send(message);
+                            Thread.Sleep(100);
                         }
                         catch (Exception exception)
                         {
+                            transport.Close();
+                            stopEvent.Set();
                             logger.Error("Cannot send message", exception);
                         }
                     }
                 }
-                transport.Close();
-                stopEvent.Set();
             })
             { IsBackground = true, Name = "Graylog Buffered Transport Thread" }.Start();
         }
 
         public void Send(GelfMessage message)
         {
-            buffer.Add(message, cancellationTokenSource.Token);
+            buffer.Enqueue(message);
         }
 
         public void Close()
         {
-            buffer.CompleteAdding();
-            cancellationTokenSource.Cancel();
             stopEvent.WaitOne();
-            stopEvent.Dispose();
+            stopEvent.Close();
         }
     }
 }

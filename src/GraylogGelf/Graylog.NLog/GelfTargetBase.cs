@@ -87,7 +87,7 @@ namespace Graylog.NLog
                 foreach (var parameter in Parameters)
                 {
                     var value = parameter.Layout.Render(loggingEvent);
-                    if (string.IsNullOrWhiteSpace(value))
+                    if (value == null || value == "")
                     {
                         continue;
                     }
