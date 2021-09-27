@@ -28,7 +28,7 @@ namespace Graylog.Example
                 }
                 catch (Exception ex)
                 {
-                    //Log.Error("Descriptive message example", ex);
+                    Log.Error("Descriptive message example", ex);
                 }
                 Thread.Sleep(TimeSpan.FromSeconds(0.5));
             }
