@@ -3,6 +3,7 @@ using Graylog.Core.Transports;
 using log4net.Appender;
 using log4net.Core;
 using System;
+using System.Collections.Generic;
 
 namespace Graylog.Log4Net
 {
@@ -69,12 +70,20 @@ namespace Graylog.Log4Net
             try
             {
                 var renderedEvent = RenderLoggingEvent(loggingEvent);
+                var ip = "";
+                var ipList = SystemInfo.GetLocalIpAddress("InterNetwork");
+                if (ipList != null && ipList.Count > 0)
+                {
+                    ip = SystemInfo.GetLocalIpAddress("InterNetwork")[0];
+                }
+
                 var messageBuilder = new GelfMessageBuilder(renderedEvent, HostName, loggingEvent.TimeStamp, loggingEvent.Level.ToGelf())
                     //.SetAdditionalField("facility", Facility)
                     .SetAdditionalField("loggerName", loggingEvent.LoggerName)
+                    .SetAdditionalField("ip", ip)
                     .SetAdditionalField("threadName", loggingEvent.ThreadName);
-                    //.SetAdditionalField("userName", loggingEvent.UserName)
-                    //.SetAdditionalField("appDomain", loggingEvent.Domain);
+                //.SetAdditionalField("userName", loggingEvent.UserName)
+                //.SetAdditionalField("appDomain", loggingEvent.Domain);
                 if (IncludeSource)
                 {
                     var locationInformation = loggingEvent.LocationInformation;
@@ -121,5 +130,7 @@ namespace Graylog.Log4Net
             transport.Close();
             transport = null;
         }
+
+
     }
 }
